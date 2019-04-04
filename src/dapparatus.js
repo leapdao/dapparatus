@@ -262,6 +262,8 @@ class Dapparatus extends Component {
         network="xDai"
       }else if(window.web3 && window.web3.currentProvider && window.web3.currentProvider.host && window.web3.currentProvider.host.indexOf("poa.network")>=0){
         network="POA"
+      }else if(window.web3 && window.web3.currentProvider && window.web3.currentProvider.host && window.web3.currentProvider.host.indexOf("leap")>=0){
+        network="LeapMainnet"
       }
     }
     if (this.state.config.DEBUG) console.log('DAPPARATUS - translated network', network);
@@ -660,6 +662,10 @@ function translateNetwork(network) {
     return 'POA';
   } else if (network == 100) {
     return 'xDai';
+  } else if (network == 1340) {
+    return 'LeapMainnet';
+  } else if (network == 1341) {
+    return 'LeapTestnet';
   } else {
     return 'Unknown';
   }
