@@ -8,6 +8,7 @@ import Blockies from 'react-blockies';
 import ENS from 'ethereum-ens';
 import Web3 from 'web3';
 import Button from './button.js';
+import { helpers } from 'leap-core';
 const queryString = require('query-string');
 
 let interval;
@@ -262,9 +263,9 @@ class Dapparatus extends Component {
         network="xDai"
       }else if(window.web3 && window.web3.currentProvider && window.web3.currentProvider.host && window.web3.currentProvider.host.indexOf("poa.network")>=0){
         network="POA"
-      }else if(window.web3 && window.web3.currentProvider && window.web3.currentProvider.host && window.web3.currentProvider.host.indexOf("leap")>=0){
-        network="LeapMainnet"
       }
+    } else if (this.props.network === "LeapTestnet" || this.props.network === "LeapMainnet") {
+      network=this.props.network
     }
     if (this.state.config.DEBUG) console.log('DAPPARATUS - translated network', network);
     let accounts;
@@ -389,9 +390,17 @@ class Dapparatus extends Component {
   loadBlockBalanceAndName(account, network) {
 
     if (this.state.config.DEBUG)  console.log("LOADING BALANCE...")
-    window.web3.eth.getBlockNumber((err, block) => {
+
+    let web3
+    if (network === "LeapTestnet" || network === "LeapMainet") {
+        web3 = helpers.extendWeb3(new Web3(new Web3.providers.WebsocketProvider(this.props.leapProvider)))
+    } else {
+        web3 = window.web3
+    }
+
+    web3.eth.getBlockNumber((err, block) => {
       if (this.state.config.DEBUG)  console.log("BLOCK",err,block)
-      window.web3.eth.getBalance('' + account, (err, balance, e) => {
+      web3.eth.getBalance('' + account, (err, balance, e) => {
         if (this.state.config.DEBUG)  console.log("BALANCE",err,balance,e)
         if (typeof balance == 'string') {
           balance = parseFloat(balance) / 1000000000000000000;
@@ -420,7 +429,7 @@ class Dapparatus extends Component {
           this.state.block != block ||
           this.state.balance != balance
         ) {
-          web3 = new Web3(window.web3.currentProvider);
+          web3 = new Web3(window.web3.currentProvider)
           let ens = {};
           if (['Unknown', "Private"].indexOf(network) === -1) {
             ens = new ENS(window.web3.currentProvider);
@@ -456,6 +465,12 @@ class Dapparatus extends Component {
             account: account.toLowerCase(),
             metaAccount: this.state.metaAccount
           };
+
+
+          if (network === "LeapTestnet" || network === "LeapMainnet") {
+            let leapProvider = helpers.extendWeb3(new Web3(new Web3.providers.WebsocketProvider(this.props.leapProvider)))
+            update["leapProvider"] = leapProvider
+          }
           if (block != this.state.block) {
             //block update
             if (this.state.lastBlockTime) {
