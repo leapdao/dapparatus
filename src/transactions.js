@@ -80,7 +80,7 @@ class Transactions extends Component {
   componentDidMount(){
     interval = setInterval(this.checkTxs.bind(this),this.state.config.CHECKONTXS)
     this.checkTxs()
-    this.props.onReady({
+    const utils = {
       customtx: (hash,callback)=>{
         let currentTransactions = this.state.transactions
         currentTransactions.push({hash:hash,time:Date.now(),addedFromCallback:1,metatx:true})
@@ -316,7 +316,11 @@ class Transactions extends Component {
         console.log("RESULT:",result)
         cb(result)
       }
-    })
+    }
+
+    // Promisified versions of tx
+    utils.pTx = async (...args) => new Promise(resolve => utils.tx(...args, resolve))
+    this.props.onReady(utils)
   }
   componentWillUnmount(){
     clearInterval(interval)
