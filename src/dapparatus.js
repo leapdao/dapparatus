@@ -393,7 +393,7 @@ class Dapparatus extends Component {
 
     let web3
     if (network === "LeapTestnet" || network === "LeapMainet") {
-        web3 = helpers.extendWeb3(new Web3(new Web3.providers.WebsocketProvider(this.props.leapProvider)))
+        web3 = helpers.extendWeb3(new Web3(new Web3.providers.WebsocketProvider(this.props.xdaiProvider)))
     } else {
         web3 = window.web3
     }
@@ -468,8 +468,8 @@ class Dapparatus extends Component {
 
 
           if (network === "LeapTestnet" || network === "LeapMainnet") {
-            let leapProvider = helpers.extendWeb3(new Web3(new Web3.providers.WebsocketProvider(this.props.leapProvider)))
-            update["leapProvider"] = leapProvider
+            let xdaiweb3 = helpers.extendWeb3(new Web3(new Web3.providers.WebsocketProvider(this.props.xdaiProvider)))
+            update["xdaiweb3"] = xdaiweb3
           }
           if (block != this.state.block) {
             //block update
