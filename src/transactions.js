@@ -319,7 +319,7 @@ class Transactions extends Component {
     }
 
     // Promisified versions of tx
-    utils.pTx = async (...args) => new Promise(resolve => utils.tx(...args, resolve))
+    utils.pTx = (...args) => new Promise(resolve => utils.tx(...args, resolve))
     this.props.onReady(utils)
   }
   componentWillUnmount(){
