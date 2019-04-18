@@ -258,7 +258,7 @@ class Dapparatus extends Component {
     if (this.state.config.DEBUG) console.log('DAPPARATUS - network', network);
     let networkNumber = network
     network = translateNetwork(network);
-    if(network=="Unknown" && !this.props.network){
+    if(network=="Unknown"){
       if(window.web3 && window.web3.currentProvider && window.web3.currentProvider.host && window.web3.currentProvider.host.indexOf("dai.poa.network")>=0){
         network="xDai"
       }else if(window.web3 && window.web3.currentProvider && window.web3.currentProvider.host && window.web3.currentProvider.host.indexOf("poa.network")>=0){
