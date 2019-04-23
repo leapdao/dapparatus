@@ -11,6 +11,9 @@ import Button from './button.js';
 import { helpers } from 'leap-core';
 const queryString = require('query-string');
 
+const LEAP_TESTNET = 'Leap Testnet';
+const LEAP_MAINNET = 'Leap Network';
+
 let interval;
 let defaultConfig = {};
 defaultConfig.DEBUG = false;
@@ -264,7 +267,7 @@ class Dapparatus extends Component {
       }else if(window.web3 && window.web3.currentProvider && window.web3.currentProvider.host && window.web3.currentProvider.host.indexOf("poa.network")>=0){
         network="POA"
       }
-    } else if (this.props.network === "LeapTestnet" || this.props.network === "LeapMainnet") {
+    } else if (this.props.network === LEAP_TESTNET || this.props.network === LEAP_MAINNET) {
       network=this.props.network
     }
     if (this.state.config.DEBUG) console.log('DAPPARATUS - translated network', network);
@@ -392,7 +395,7 @@ class Dapparatus extends Component {
     if (this.state.config.DEBUG)  console.log("LOADING BALANCE...")
 
     let web3
-    if (network === "LeapTestnet" || network === "LeapMainet") {
+    if (network === LEAP_TESTNET || network === LEAP_MAINNET) {
         web3 = helpers.extendWeb3(new Web3(new Web3.providers.WebsocketProvider(this.props.xdaiProvider)))
     } else {
         web3 = window.web3
@@ -467,7 +470,7 @@ class Dapparatus extends Component {
           };
 
 
-          if (network === "LeapTestnet" || network === "LeapMainnet") {
+          if (network === LEAP_TESTNET || network === LEAP_MAINNET) {
             let xdaiweb3 = helpers.extendWeb3(new Web3(new Web3.providers.WebsocketProvider(this.props.xdaiProvider)))
             update["xdaiweb3"] = xdaiweb3
           }
@@ -678,9 +681,9 @@ function translateNetwork(network) {
   } else if (network == 100) {
     return 'xDai';
   } else if (network == 1340) {
-    return 'LeapMainnet';
+    return LEAP_MAINNET;
   } else if (network == 1341) {
-    return 'LeapTestnet';
+    return LEAP_TESTNET;
   } else {
     return 'Unknown';
   }
