@@ -16,7 +16,7 @@ let defaultConfig = {};
 defaultConfig.DEBUG = false;
 defaultConfig.POLLINTERVAL = 1777;
 defaultConfig.showBalance = true;
-
+console.log('QQQQQQQ');
 //metatx
 defaultConfig.metatxAccountGenerator = '//account.metatx.io';
 
@@ -393,7 +393,7 @@ class Dapparatus extends Component {
 
     let web3
     if (network === "LeapTestnet" || network === "LeapMainet") {
-        web3 = helpers.extendWeb3(new Web3(new Web3.providers.WebsocketProvider(this.props.xdaiProvider)))
+        web3 = helpers.extendWeb3(new Web3(this.props.xdaiProvider))
     } else {
         web3 = window.web3
     }
@@ -468,7 +468,7 @@ class Dapparatus extends Component {
 
 
           if (network === "LeapTestnet" || network === "LeapMainnet") {
-            let xdaiweb3 = helpers.extendWeb3(new Web3(new Web3.providers.WebsocketProvider(this.props.xdaiProvider)))
+            let xdaiweb3 = helpers.extendWeb3(new Web3(this.props.xdaiProvider))
             update["xdaiweb3"] = xdaiweb3
           }
           if (block != this.state.block) {
