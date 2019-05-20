@@ -1,4 +1,5 @@
 var path = require('path');
+var fs = require('fs');
 
 module.exports = {
   mode: 'development',
@@ -40,6 +41,9 @@ module.exports = {
   },
   externals: {
     'react': 'react',
-    'react-dom': 'react-dom'
+    'react-dom': 'react-dom',
+    'leap-core': 'leap-core',
+    'web3': 'web3',
+    'web3-utils': 'web3-utils'
   }
 };
