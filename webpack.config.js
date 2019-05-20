@@ -2,7 +2,7 @@ var path = require('path');
 var fs = require('fs');
 
 module.exports = {
-  mode: 'development',
+  mode: 'production',
   entry: ['./src/index.js'],
   output: {
     path: path.resolve(__dirname, 'build'),
