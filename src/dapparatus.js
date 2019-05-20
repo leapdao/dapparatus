@@ -5,7 +5,7 @@ import logo from './assets/metamask.png';
 import eth from './assets/ethereum.png';
 import Scaler from './scaler.js';
 import Blockies from 'react-blockies';
-import ENS from 'ethereum-ens';
+// import ENS from 'ethereum-ens';
 import Web3 from 'web3';
 import Button from './button.js';
 import { helpers } from 'leap-core';
@@ -432,28 +432,28 @@ class Dapparatus extends Component {
           web3 = new Web3(window.web3.currentProvider)
           let ens = {};
           if (['Unknown', "Private"].indexOf(network) === -1) {
-            ens = new ENS(window.web3.currentProvider);
+            // ens = new ENS(window.web3.currentProvider);
             if (this.state.config.DEBUG)
               console.log('attempting to ens reverse account....');
-            try {
-              var address = ens
-                .reverse(account)
-                .name()
-                .catch(err => {
-                  if (this.state.config.DEBUG)
-                    console.log(
-                      'catch ens error (probably just didn\'t find it, ignore silently)'
-                    );
-                })
-                .then(data => {
-                  console.log('ENS data', data);
-                  if (data) {
-                    this.setState({ ens: data }, () => {
-                      this.props.onUpdate(Object.assign({}, this.state));
-                    });
-                  }
-                });
-            } catch (e) {}
+            // try {
+            //   var address = ens
+            //     .reverse(account)
+            //     .name()
+            //     .catch(err => {
+            //       if (this.state.config.DEBUG)
+            //         console.log(
+            //           'catch ens error (probably just didn\'t find it, ignore silently)'
+            //         );
+            //     })
+            //     .then(data => {
+            //       console.log('ENS data', data);
+            //       if (data) {
+            //         this.setState({ ens: data }, () => {
+            //           this.props.onUpdate(Object.assign({}, this.state));
+            //         });
+            //       }
+            //     });
+            // } catch (e) {}
           }
           let update = {
             status: 'ready',

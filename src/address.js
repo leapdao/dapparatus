@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import deepmerge from 'deepmerge';
 import eth from './assets/ethereum.png';
 import Blockie from './blockie.js';
-import ENS from 'ethereum-ens';
+// import ENS from 'ethereum-ens';
 
 let interval;
 let defaultConfig = {};
@@ -35,10 +35,10 @@ class Address extends Component {
     );
     this.load();
 
-    let ens = new ENS(
-      this.props.web3.currentProvider,
-      '0xe7410170f87102df0055eb195163a03b7f2bff4a'
-    ); //,"0xe7410170f87102df0055eb195163a03b7f2bff4a"
+    // let ens = new ENS(
+    //   this.props.web3.currentProvider,
+    //   '0xe7410170f87102df0055eb195163a03b7f2bff4a'
+    // ); //,"0xe7410170f87102df0055eb195163a03b7f2bff4a"
 
     //let metatxrReverse = await ens.reverse("0xcfa240ec070e33611930b8fe3db74c8d7aad4592")
     //console.log("metatxrReverse name",await metatxrReverse.name())
@@ -47,23 +47,23 @@ class Address extends Component {
 
     if (this.state.config.DEBUG)
       console.log('attempting to ens reverse account....');
-    try {
-      var address = ens
-        .reverse(this.props.address)
-        .name()
-        .catch(err => {
-          if (this.state.config.DEBUG)
-            console.log(
-              'catch ens error (probably just didn\'t find it, ignore silently)'
-            );
-        })
-        .then(data => {
-          console.log('ENS data', data);
-          if (data) {
-            this.setState({ ens: data });
-          }
-        });
-    } catch (e) {}
+    // try {
+    //   var address = ens
+    //     .reverse(this.props.address)
+    //     .name()
+    //     .catch(err => {
+    //       if (this.state.config.DEBUG)
+    //         console.log(
+    //           'catch ens error (probably just didn\'t find it, ignore silently)'
+    //         );
+    //     })
+    //     .then(data => {
+    //       console.log('ENS data', data);
+    //       if (data) {
+    //         this.setState({ ens: data });
+    //       }
+    //     });
+    // } catch (e) {}
   }
   componentWillUnmount() {
     clearInterval(interval);
