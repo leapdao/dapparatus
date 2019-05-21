@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import deepmerge from 'deepmerge';
 import eth from './assets/ethereum.png';
 import Blockie from './blockie.js';
-// import ENS from 'ethereum-ens';
 
 let interval;
 let defaultConfig = {};

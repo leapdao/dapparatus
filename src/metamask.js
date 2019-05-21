@@ -4,7 +4,6 @@ import logo from './assets/metamask.png';
 import eth from './assets/ethereum.png';
 import Scaler from './scaler.js';
 import Blockies from 'react-blockies';
-// import ENS from 'ethereum-ens';
 
 let interval;
 let defaultConfig = {};
