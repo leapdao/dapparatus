@@ -55,6 +55,7 @@
     "leap-core": "0.29.0",
     "react": "^16.4.0",
     "react-dom": "^16.4.0",
+    "terser": "^3.14.1",
     "url-loader": "^1.0.1",
     "web3": "1.0.0-beta.37",
     "web3-utils": "^1.0.0-beta.37",
