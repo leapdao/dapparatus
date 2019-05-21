@@ -36,9 +36,8 @@ class Gas extends Component {
   checkOnGasPrices(){
     if(this.props.network && this.props.network === 'Mainnet'){
       if(!this.state.config.hardcodedGwei){
-        fetch({
+        fetch('https://ethgasstation.info/json/ethgasAPI.json', {
           method: 'get',
-          url: 'https://ethgasstation.info/json/ethgasAPI.json',
           mode: 'cors',
           headers: {
             'Accept': 'application/json'

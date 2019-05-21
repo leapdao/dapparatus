@@ -39,9 +39,8 @@ class Transactions extends Component {
   }
   metaTxPoll(){
     let metatxUrl = this.props.metatx.endpoint+'txs/'+this.props.account
-    fetch({
+    fetch(metatxUrl, {
       method: 'get',
-      url: metatxUrl,
       headers: {
         'Content-Type': 'application/json',
       }
@@ -374,9 +373,8 @@ class Transactions extends Component {
       sig:sig,
     }
 
-    fetch({
+    fetch(this.props.metatx.endpoint+'tx', {
       method: 'post',
-      url: this.props.metatx.endpoint+'tx',
       body: JSON.stringify(postData),
       headers: {
         'Content-Type': 'application/json',
