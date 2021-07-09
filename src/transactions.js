@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
 import deepmerge from 'deepmerge';
-import {Motion, spring, presets} from 'react-motion'
-import { Line, Circle } from 'rc-progress';
-import Scaler from "./scaler.js"
-import Web3 from 'web3';
+import {Motion, spring } from 'react-motion'
+import { Line } from 'rc-progress';
+import Scaler from './scaler.js'
 import { soliditySha3 } from 'web3-utils';
-import axios from 'axios';
 
 let interval
 
@@ -41,36 +39,37 @@ class Transactions extends Component {
   }
   metaTxPoll(){
     let metatxUrl = this.props.metatx.endpoint+'txs/'+this.props.account
-    axios.get(metatxUrl, {
+    fetch(metatxUrl, {
+      method: 'get',
       headers: {
-          'Content-Type': 'application/json',
+        'Content-Type': 'application/json',
       }
-    }).then((response)=>{
-      if(response&&response.data){
-        let currentTransactions = this.state.transactions
-        let callbacks = this.state.callbacks
-        let changed = false
-        for(let d in response.data){
-          let thisTransaction =  response.data[d]
-          let found = false
-          for(let t in currentTransactions){
-            if(currentTransactions[t].hash == thisTransaction.hash){
-              found = true
-            }
-          }
-          if(!found){
-            console.log("INCOMING META TX:",response.data[d])
-            changed=true
-            if(this.state.config.DEBUG) console.log("Adding tx to list...")
-            currentTransactions.push(thisTransaction)
-            callbacks[thisTransaction.hash] = ()=>{
-              console.log("META TX FINISHED",thisTransaction.hash)
-            }
+    })
+    .then(r => r.json())
+    .then((response)=>{
+      let currentTransactions = this.state.transactions
+      let callbacks = this.state.callbacks
+      let changed = false
+      for(let d in response){
+        let thisTransaction =  response[d]
+        let found = false
+        for(let t in currentTransactions){
+          if(currentTransactions[t].hash == thisTransaction.hash){
+            found = true
           }
         }
-        if(changed){
-          this.setState({transactions:currentTransactions,callbacks:callbacks})
+        if(!found){
+          console.log("INCOMING META TX:",response[d])
+          changed=true
+          if(this.state.config.DEBUG) console.log("Adding tx to list...")
+          currentTransactions.push(thisTransaction)
+          callbacks[thisTransaction.hash] = ()=>{
+            console.log("META TX FINISHED",thisTransaction.hash)
+          }
         }
+      }
+      if(changed){
+        this.setState({transactions:currentTransactions,callbacks:callbacks})
       }
     })
     .catch((error)=>{
@@ -80,7 +79,7 @@ class Transactions extends Component {
   componentDidMount(){
     interval = setInterval(this.checkTxs.bind(this),this.state.config.CHECKONTXS)
     this.checkTxs()
-    this.props.onReady({
+    const utils = {
       customtx: (hash,callback)=>{
         let currentTransactions = this.state.transactions
         currentTransactions.push({hash:hash,time:Date.now(),addedFromCallback:1,metatx:true})
@@ -316,7 +315,11 @@ class Transactions extends Component {
         console.log("RESULT:",result)
         cb(result)
       }
-    })
+    }
+
+    // Promisified versions of tx
+    utils.pTx = (...args) => new Promise(resolve => utils.tx(...args, resolve))
+    this.props.onReady(utils)
   }
   componentWillUnmount(){
     clearInterval(interval)
@@ -370,18 +373,21 @@ class Transactions extends Component {
       sig:sig,
     }
 
-
-    axios.post(this.props.metatx.endpoint+'tx', postData, {
+    fetch(this.props.metatx.endpoint+'tx', {
+      method: 'post',
+      body: JSON.stringify(postData),
       headers: {
-          'Content-Type': 'application/json',
+        'Content-Type': 'application/json',
       }
-    }).then((response)=>{
-      console.log("TX RESULT",response.data.transactionHash)
+    })
+    .then(r => r.json())
+    .then((response)=>{
+      console.log("TX RESULT",response.transactionHash)
 
       let currentTransactions = this.state.transactions
-      currentTransactions.push({hash:response.data.transactionHash,time:Date.now(),addedFromCallback:1,metatx:true})
+      currentTransactions.push({hash:response.transactionHash,time:Date.now(),addedFromCallback:1,metatx:true})
       let callbacks = this.state.callbacks
-      callbacks[response.data.transactionHash] = callback
+      callbacks[response.transactionHash] = callback
       this.setState({transactions:currentTransactions,callbacks:callbacks})
 
     })

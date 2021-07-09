@@ -5,9 +5,9 @@ import logo from './assets/metamask.png';
 import eth from './assets/ethereum.png';
 import Scaler from './scaler.js';
 import Blockies from 'react-blockies';
-import ENS from 'ethereum-ens';
 import Web3 from 'web3';
 import Button from './button.js';
+import { helpers } from 'leap-core';
 const queryString = require('query-string');
 
 let interval;
@@ -15,7 +15,7 @@ let defaultConfig = {};
 defaultConfig.DEBUG = false;
 defaultConfig.POLLINTERVAL = 1777;
 defaultConfig.showBalance = true;
-
+console.log('QQQQQQQ');
 //metatx
 defaultConfig.metatxAccountGenerator = '//account.metatx.io';
 
@@ -257,14 +257,14 @@ class Dapparatus extends Component {
     if (this.state.config.DEBUG) console.log('DAPPARATUS - network', network);
     let networkNumber = network
     network = translateNetwork(network);
-    if(network=="Unknown"){
+    if(network=="Unknown" && !this.props.network){
       if(window.web3 && window.web3.currentProvider && window.web3.currentProvider.host && window.web3.currentProvider.host.indexOf("dai.poa.network")>=0){
         network="xDai"
       }else if(window.web3 && window.web3.currentProvider && window.web3.currentProvider.host && window.web3.currentProvider.host.indexOf("poa.network")>=0){
         network="POA"
-      }else if(window.web3 && window.web3.currentProvider && window.web3.currentProvider.host && window.web3.currentProvider.host.indexOf("leap")>=0){
-        network="LeapMainnet"
       }
+    } else if (this.props.network === "LeapTestnet" || this.props.network === "LeapMainnet") {
+      network=this.props.network
     }
     if (this.state.config.DEBUG) console.log('DAPPARATUS - translated network', network);
     let accounts;
@@ -389,9 +389,17 @@ class Dapparatus extends Component {
   loadBlockBalanceAndName(account, network) {
 
     if (this.state.config.DEBUG)  console.log("LOADING BALANCE...")
-    window.web3.eth.getBlockNumber((err, block) => {
+
+    let web3
+    if (network === "LeapTestnet" || network === "LeapMainet") {
+        web3 = helpers.extendWeb3(new Web3(this.props.xdaiProvider))
+    } else {
+        web3 = window.web3
+    }
+
+    web3.eth.getBlockNumber((err, block) => {
       if (this.state.config.DEBUG)  console.log("BLOCK",err,block)
-      window.web3.eth.getBalance('' + account, (err, balance, e) => {
+      web3.eth.getBalance('' + account, (err, balance, e) => {
         if (this.state.config.DEBUG)  console.log("BALANCE",err,balance,e)
         if (typeof balance == 'string') {
           balance = parseFloat(balance) / 1000000000000000000;
@@ -420,31 +428,31 @@ class Dapparatus extends Component {
           this.state.block != block ||
           this.state.balance != balance
         ) {
-          web3 = new Web3(window.web3.currentProvider);
+          web3 = new Web3(window.web3.currentProvider)
           let ens = {};
           if (['Unknown', "Private"].indexOf(network) === -1) {
-            ens = new ENS(window.web3.currentProvider);
+            // ens = new ENS(window.web3.currentProvider);
             if (this.state.config.DEBUG)
               console.log('attempting to ens reverse account....');
-            try {
-              var address = ens
-                .reverse(account)
-                .name()
-                .catch(err => {
-                  if (this.state.config.DEBUG)
-                    console.log(
-                      'catch ens error (probably just didn\'t find it, ignore silently)'
-                    );
-                })
-                .then(data => {
-                  console.log('ENS data', data);
-                  if (data) {
-                    this.setState({ ens: data }, () => {
-                      this.props.onUpdate(Object.assign({}, this.state));
-                    });
-                  }
-                });
-            } catch (e) {}
+            // try {
+            //   var address = ens
+            //     .reverse(account)
+            //     .name()
+            //     .catch(err => {
+            //       if (this.state.config.DEBUG)
+            //         console.log(
+            //           'catch ens error (probably just didn\'t find it, ignore silently)'
+            //         );
+            //     })
+            //     .then(data => {
+            //       console.log('ENS data', data);
+            //       if (data) {
+            //         this.setState({ ens: data }, () => {
+            //           this.props.onUpdate(Object.assign({}, this.state));
+            //         });
+            //       }
+            //     });
+            // } catch (e) {}
           }
           let update = {
             status: 'ready',
@@ -456,6 +464,12 @@ class Dapparatus extends Component {
             account: account.toLowerCase(),
             metaAccount: this.state.metaAccount
           };
+
+
+          if (network === "LeapTestnet" || network === "LeapMainnet") {
+            let xdaiweb3 = helpers.extendWeb3(new Web3(this.props.xdaiProvider))
+            update["xdaiweb3"] = xdaiweb3
+          }
           if (block != this.state.block) {
             //block update
             if (this.state.lastBlockTime) {

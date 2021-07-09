@@ -1,7 +1,8 @@
 var path = require('path');
+var fs = require('fs');
 
 module.exports = {
-  mode: 'development',
+  mode: 'production',
   entry: ['./src/index.js'],
   output: {
     path: path.resolve(__dirname, 'build'),
@@ -38,8 +39,8 @@ module.exports = {
       }
     ]
   },
-  externals: {
-    'react': 'react',
-    'react-dom': 'react-dom'
-  }
+  externals: fs.readdirSync('node_modules').reduce((externals, module) => {
+    externals[module] = module;
+    return externals;
+  }, {})
 };
